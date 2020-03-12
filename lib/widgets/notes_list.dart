@@ -3,47 +3,50 @@ import 'package:intl/intl.dart';
 import 'package:note_it/models/notes.dart';
 import 'package:note_it/screens/detail_screen.dart';
 
-class NoteList extends StatelessWidget {
+class NoteList extends StatefulWidget {
   final List<Notes> _note;
 
   final Function _deleteTx;
 
   NoteList(this._note, this._deleteTx);
+  DateTime dateTime;
 
-  // void selectedNote(BuildContext ctx) {
-  //   Navigator.pushNamed(
-  //     ctx,
-  //     DetailScreen.routeName,
-  //   );
-  // }
+  @override
+  _NoteListState createState() => _NoteListState();
+}
+
+class _NoteListState extends State<NoteList> {
+  DateTime getDateTime(int i) {
+    DateTime noteDate = DateTime.parse(widget._note[i].id);
+    return noteDate;
+  }
 
   @override
   Widget build(BuildContext context) {
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat('kk:mm').format(now);
-    return _note.isEmpty
+    return widget._note.isEmpty
         ? LayoutBuilder(
             builder: (ctx, constraints) {
               return Container(
+                alignment: Alignment.center,
                 height: 300,
                 width: 300,
                 padding: EdgeInsets.all(40),
                 margin: EdgeInsets.only(top: 140, left: 50),
                 child: Image.asset(
                   "assets/images/nothing.png",
-                  fit: BoxFit.contain,
+                  fit: BoxFit.cover,
                 ),
               );
             },
           )
         : ListView.builder(
-            itemCount: _note.length,
+            itemCount: widget._note.length,
             itemBuilder: (ctx, i) {
               return Dismissible(
-                key: ValueKey(_note[i].toString()),
+                key: ValueKey(widget._note[i].id),
                 direction: DismissDirection.endToStart,
                 onDismissed: (direction) {
-                  _deleteTx(_note[i].id);
+                  widget._deleteTx(widget._note[i].id);
                 },
                 background: Container(
                     alignment: Alignment.centerRight,
@@ -60,8 +63,8 @@ class NoteList extends StatelessWidget {
                     // selectedNote(context);
                     Navigator.pushNamed(ctx, DetailScreen.routeName,
                         arguments: {
-                          "title": _note[i].title,
-                          "des": _note[i].description
+                          "title": widget._note[i].title,
+                          "des": widget._note[i].description
                         });
                   },
                   child: Card(
@@ -69,10 +72,10 @@ class NoteList extends StatelessWidget {
                     child: ListTile(
                       leading: Padding(
                         padding: const EdgeInsets.only(top: 15.0),
-                        child: Text(formattedDate),
+                        child: Text(DateFormat.Hm().format(getDateTime(i))),
                       ),
-                      title: Text(_note[i].title),
-                      subtitle: Text(_note[i].description),
+                      title: Text(widget._note[i].title),
+                      subtitle: Text(widget._note[i].description),
                     ),
                   ),
                 ),

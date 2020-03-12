@@ -44,6 +44,7 @@ class _NewNoteState extends State<NewNote> {
                 height: 30,
               ),
               TextField(
+                maxLines: 1,
                 decoration: InputDecoration(labelText: "Let's write"),
                 controller: desController,
               ),
